@@ -76,7 +76,7 @@ npm start
 ````
 O primeiro comando irá instalar todas as dependências do projeto (incluindo o Express), e o segundo comando irá iniciar o servidor.
 
-## Padrão Middleware (tratamento de rota)
+## 10. Padrão Middleware (tratamento de rota)
 O padrão Middleware é uma abordagem comum em aplicações web para processar requisições antes que elas cheguem ao tratamento final da rota. Isso permite a execução de ações intermediárias, como validações, registros de logs ou autenticação, antes de prosseguir para o tratamento principal da rota.
 
 No arquivo index.js, você pode implementar o padrão Middleware usando o framework Express. Vamos entender o código fornecido:
@@ -108,3 +108,52 @@ Em seguida, temos um tratamento de rota para a rota '/', que responde com o text
 Por fim, temos um tratamento de rota curinga ('*'), que é acionado quando nenhuma das rotas anteriores corresponde à requisição. Nesse caso, retornamos um código de status 404 (recurso não encontrado) como resposta.
 
 Ao utilizar o padrão Middleware, você pode adicionar mais funções de tratamento intermediárias antes do tratamento final da rota, tornando sua aplicação mais modular e fácil de manter.
+
+## 11. Middleware Static - Servindo Arquivos Estáticos
+O middleware static é uma funcionalidade importante no Express que permite servir arquivos estáticos, como HTML, CSS, JavaScript, imagens e outros recursos, diretamente para o cliente, sem a necessidade de configurar rotas específicas para cada arquivo.
+
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res, next) => {
+    console.log(new Date().toLocaleDateString(), req.method, req.path);
+    next(); // <-- Correção aqui: troque "nrxt()" por "next()"
+});
+
+app.use (express.static ('public'))
+
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+````
+criar um arquivo index.html dentro da pasta public:
+````html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        h1 {
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem-vindo à Página Inicial</h1>
+    <p>Essa é uma página inicial simples criada com HTML e CSS.</p>
+</body>
+</html>
+````
+O middleware static é usado para fornecer conteúdo estático ao usuário sempre que uma solicitação é feita. Ao utilizar o express.static('public'), estamos instruindo o Express a procurar os arquivos dentro da pasta 'public' e enviá-los como resposta à solicitação do cliente.
+
+Por exemplo, quando um usuário acessa a rota principal '/' do servidor, o middleware personalizado de registro de logs é executado primeiro, registrando detalhes sobre a requisição. Em seguida, o middleware static entra em ação, procurando o arquivo index.html dentro da pasta 'public' e enviando-o como resposta para a rota principal.
+
+Dessa forma, sempre que você acessar http://localhost:3000, a página inicial index.html será exibida no navegador sem a necessidade de configurar uma rota específica para isso. O middleware static automatiza o processo de servir arquivos estáticos, tornando o desenvolvimento de aplicações web mais eficiente e organizado.
