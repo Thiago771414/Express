@@ -221,3 +221,69 @@ Corpo da Requisição (JSON):
 }
 ````
 Resultado: O middleware express.json() irá processar o corpo da requisição no formato JSON, e o objeto req.body será preenchido com os dados enviados. O servidor irá imprimir os dados recebidos no console e enviará a resposta "Informação recebida com sucesso" de volta ao cliente.
+
+## 13. Express.js - Middlewares de Terceiros: Cors e Helmet
+
+O Express.js é um popular framework para aplicativos web em Node.js. Ele oferece uma arquitetura simples e flexível para construir APIs e aplicativos web. Uma das principais características do Express é a capacidade de usar middlewares, que são funções que são executadas sequencialmente para lidar com as requisições HTTP. Middlewares de terceiros são módulos externos que adicionam funcionalidades extras ao Express, ajudando a simplificar tarefas comuns ou aprimorar a segurança. Vamos entender dois desses middlewares de terceiros: Cors e Helmet.
+
+1. CORS (Cross-Origin Resource Sharing):
+
+O CORS é um mecanismo de segurança implementado nos navegadores que impede solicitações de serem feitas a um domínio diferente daquele em que a página está sendo executada. Isso é conhecido como mesma origem (same-origin policy). No entanto, há cenários legítimos em que você deseja permitir que sua API seja acessada por outros domínios (origens). É aí que o middleware CORS entra em cena.
+
+O pacote cors é um middleware de terceiros que permite configurar as opções de CORS para a sua aplicação Express.
+
+Exemplo de uso:
+````javascript
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// Habilitando o CORS para todas as rotas
+app.use(cors());
+
+// Definindo opções específicas do CORS
+const corsOptions = {
+  origin: 'https://meuapp.com', // Permitir apenas requisições desse domínio
+  methods: ['GET', 'POST'], // Permitir apenas os métodos GET e POST
+};
+
+app.use('/api', cors(corsOptions));
+
+// Rotas da API
+app.get('/api/data', (req, res) => {
+  res.json({ message: 'Dados da API' });
+});
+
+app.post('/api/create', (req, res) => {
+  // Lógica para criar um novo recurso na API
+});
+
+app.listen(3000, () => {
+  console.log('Servidor rodando na porta 3000');
+});
+````
+2. Helmet:
+O pacote helmet é outro middleware de terceiros que ajuda a melhorar a segurança da aplicação Express, configurando vários cabeçalhos HTTP relacionados à segurança.
+````javascript
+const express = require('express');
+const helmet = require('helmet');
+const app = express();
+
+// Usando o middleware Helmet
+app.use(helmet());
+
+// Rotas da aplicação
+app.get('/api/data', (req, res) => {
+  res.json({ message: 'Dados da API' });
+});
+
+app.listen(3000, () => {
+  console.log('Servidor rodando na porta 3000');
+});
+````
+O middleware Helmet configura automaticamente os cabeçalhos HTTP, como:
+
+X-Content-Type-Options: Define a opção "nosniff" para ajudar a evitar ataques baseados em MIME.
+X-Frame-Options: Configura o cabeçalho "X-Frame-Options" para prevenir ataques de clique em link (clickjacking).
+Strict-Transport-Security: Define a política de segurança de transporte para evitar ataques man-in-the-middle e forçar o uso de HTTPS.
+Esses são apenas dois exemplos de middlewares de terceiros que podem ser usados em conjunto com o Express para adicionar funcionalidades adicionais ou aumentar a segurança da sua aplicação. O ecossistema do Node.js é rico em bibliotecas e pacotes, e você pode encontrar outros middlewares de terceiros que se adequem às necessidades específicas do seu projeto. Sempre verifique a documentação oficial dos pacotes para entender como usá-los corretamente.
