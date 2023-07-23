@@ -75,3 +75,36 @@ npm install
 npm start
 ````
 O primeiro comando irá instalar todas as dependências do projeto (incluindo o Express), e o segundo comando irá iniciar o servidor.
+
+## Padrão Middleware (tratamento de rota)
+O padrão Middleware é uma abordagem comum em aplicações web para processar requisições antes que elas cheguem ao tratamento final da rota. Isso permite a execução de ações intermediárias, como validações, registros de logs ou autenticação, antes de prosseguir para o tratamento principal da rota.
+
+No arquivo index.js, você pode implementar o padrão Middleware usando o framework Express. Vamos entender o código fornecido:
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res, next) => {
+    console.log(new Date().toLocaleDateString(), req.method, req.path);
+    next(); // <-- Correção aqui: troque "nrxt()" por "next()"
+});
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+app.get('*', (req, res) => {
+    res.status(404).send('Recurso não encontrado');
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+````
+Neste exemplo, criamos um Middleware personalizado que registra os detalhes da requisição, como data, método e caminho da requisição. Em seguida, chamamos next() para permitir que a requisição continue para a próxima função de tratamento de rota.
+
+Em seguida, temos um tratamento de rota para a rota '/', que responde com o texto "Hello World!" quando essa rota é acessada.
+
+Por fim, temos um tratamento de rota curinga ('*'), que é acionado quando nenhuma das rotas anteriores corresponde à requisição. Nesse caso, retornamos um código de status 404 (recurso não encontrado) como resposta.
+
+Ao utilizar o padrão Middleware, você pode adicionar mais funções de tratamento intermediárias antes do tratamento final da rota, tornando sua aplicação mais modular e fácil de manter.
