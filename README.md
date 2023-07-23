@@ -287,3 +287,166 @@ X-Content-Type-Options: Define a opção "nosniff" para ajudar a evitar ataques 
 X-Frame-Options: Configura o cabeçalho "X-Frame-Options" para prevenir ataques de clique em link (clickjacking).
 Strict-Transport-Security: Define a política de segurança de transporte para evitar ataques man-in-the-middle e forçar o uso de HTTPS.
 Esses são apenas dois exemplos de middlewares de terceiros que podem ser usados em conjunto com o Express para adicionar funcionalidades adicionais ou aumentar a segurança da sua aplicação. O ecossistema do Node.js é rico em bibliotecas e pacotes, e você pode encontrar outros middlewares de terceiros que se adequem às necessidades específicas do seu projeto. Sempre verifique a documentação oficial dos pacotes para entender como usá-los corretamente.
+
+## 13. Express.js - Objeto de resposta
+A) res.download(): Envia um arquivo para ser salvo pelo cliente.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/download', (req, res) => {
+  const filePath = '/path/to/file.txt'; // Caminho do arquivo que será enviado para download
+  res.download(filePath);
+});
+
+app.listen(3000);
+````
+B) res.end(): Finaliza o processo de resposta.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/end', (req, res) => {
+  res.end('Processo finalizado.');
+});
+
+app.listen(3000);
+````
+
+C) res.json(): Envia um objeto JSON como resposta.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/json', (req, res) => {
+  const data = { message: 'Exemplo de resposta JSON.' };
+  res.json(data);
+});
+
+app.listen(3000);
+````
+D) res.jsonp(): Envia um objeto JSON como resposta no formato JSONP.
+
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/jsonp', (req, res) => {
+  const data = { message: 'Exemplo de resposta JSONP.' };
+  res.jsonp(data);
+});
+
+app.listen(3000);
+````
+E) res.redirect(): Redireciona uma requisição para outro recurso.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/redirect', (req, res) => {
+  res.redirect('https://www.example.com');
+});
+
+app.listen(3000);
+````
+
+F) res.render(): Processa um arquivo de template.
+
+````javascript
+const express = require('express');
+const app = express();
+
+app.set('view engine', 'ejs'); // Define o mecanismo de template como EJS
+
+app.get('/render', (req, res) => {
+  const data = { message: 'Exemplo de resposta renderizada.' };
+  res.render('template', data); // Supondo que exista um arquivo "template.ejs"
+});
+
+app.listen(3000);
+````
+G) res.send(): Envia resposta de diversos tipos.
+
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/send', (req, res) => {
+  res.send('<h1>Exemplo de resposta enviada.</h1>'); // Pode enviar HTML, texto, etc.
+});
+
+app.listen(3000);
+````
+H) res.sendFile(): Envia um arquivo como stream.
+
+````javascript
+const express = require('express');
+const path = require('path');
+const app = express();
+
+app.get('/file', (req, res) => {
+  const filePath = '/path/to/file.pdf'; // Caminho do arquivo que será enviado
+  res.sendFile(path.join(__dirname, filePath));
+});
+
+app.listen(3000);
+````
+I) res.sendStatus(): Define o código de status da resposta e envia a mensagem de status padrão associada a ele.
+
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/status', (req, res) => {
+  res.sendStatus(404); // Envia uma resposta com código de status 404 (Not Found)
+});
+
+app.listen(3000);
+````
+
+J) res.status(): Informa o código de status da resposta. O método status() permite o encadeamento de outras funções.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/status', (req, res) => {
+  res.status(200).json({ message: 'Exemplo de resposta com status 200.' });
+});
+
+app.listen(3000);
+````
+L) res.type(): Informa o tipo de conteúdo da resposta (definido no header Content-Type).
+
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/content', (req, res) => {
+  res.type('text/plain'); // Define o tipo de conteúdo como texto plano
+  res.send('Exemplo de resposta com tipo de conteúdo definido.');
+});
+
+app.listen(3000);
+````
+M) res.format(): Verifica o formato solicitado e envia a resposta apropriada (header Accept).
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/format', (req, res) => {
+  res.format({
+    'text/plain': () => {
+      res.send('Resposta em texto plano.');
+    },
+    'application/json': () => {
+      res.json({ message: 'Resposta em JSON.' });
+    },
+    'text/html': () => {
+      res.send('<h1>Resposta em HTML.</h1>');
+    },
+  });
+});
+
+app.listen(3000);
+````
+
