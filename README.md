@@ -157,3 +157,67 @@ O middleware static é usado para fornecer conteúdo estático ao usuário sempr
 Por exemplo, quando um usuário acessa a rota principal '/' do servidor, o middleware personalizado de registro de logs é executado primeiro, registrando detalhes sobre a requisição. Em seguida, o middleware static entra em ação, procurando o arquivo index.html dentro da pasta 'public' e enviando-o como resposta para a rota principal.
 
 Dessa forma, sempre que você acessar http://localhost:3000, a página inicial index.html será exibida no navegador sem a necessidade de configurar uma rota específica para isso. O middleware static automatiza o processo de servir arquivos estáticos, tornando o desenvolvimento de aplicações web mais eficiente e organizado.
+
+## 12. Middleware de Parses
+No Express, os middlewares de parses são responsáveis por processar os dados do corpo (body) das requisições com base no tipo de conteúdo que está sendo enviado, como JSON, urlencoded, raw ou texto. Esses middlewares populam o objeto req.body com os dados processados, tornando-os acessíveis para uso posterior nas rotas.
+
+````javascript
+const express = require('express');
+const app = express();
+
+// Middleware para habilitar o uso de JSON nas requisições POST
+app.use(express.json());
+
+// Middleware para registro de logs
+app.use((req, res, next) => {
+    console.log(new Date().toLocaleDateString(), req.method, req.path);
+    next();
+});
+
+// Middleware Static para servir arquivos da pasta 'public'
+app.use('/site', express.static('public'));
+
+app.post('/users', (req, res) => {
+    const dados = req.body;
+    console.log(dados);
+    res.send('Informação recebida com sucesso');
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+````
+Explicação:
+
+Middleware express.json(): Este middleware é usado para tratar dados enviados no formato JSON. Quando você envia uma requisição POST com o cabeçalho "Content-Type: application/json", o Express irá utilizar esse middleware para analisar o corpo da requisição e converter o JSON em um objeto JavaScript, que é acessível através da propriedade req.body.
+
+Middleware express.urlencoded(): Esse middleware é usado para tratar dados enviados no formato URL-encoded. Quando você envia uma requisição POST com o cabeçalho "Content-Type: application/x-www-form-urlencoded", o Express utilizará esse middleware para analisar o corpo da requisição e transformar os dados em um objeto JavaScript, que é acessível através da propriedade req.body.
+
+Middleware express.raw(): Este middleware é usado para tratar dados enviados no formato raw (cru), ou seja, dados binários ou de texto não estruturado. Ele coloca os dados brutos no corpo da requisição na propriedade req.body.
+
+Middleware express.text(): Esse middleware é usado para tratar dados enviados no formato de texto simples. Quando você envia uma requisição POST com o cabeçalho "Content-Type: text/plain", o Express utilizará esse middleware para analisar o corpo da requisição e colocar o texto na propriedade req.body.
+
+Para testar os middlewares, você pode utilizar a extensão Thunder Client no Visual Studio Code para simular requisições.
+
+Exemplo de requisição GET:
+
+Digite o seguinte endereço utilizando o método GET e veja o resultado:
+
+URL: http://localhost:3000/site
+
+Resultado: Se houver algum arquivo correspondente na pasta 'public' em relação à rota '/site', ele será servido pelo middleware static. Caso contrário, retornará um erro 404 Not Found.
+
+Exemplo de requisição POST:
+
+Digite o seguinte endereço utilizando o método POST e veja o resultado:
+
+URL: http://localhost:3000/users
+
+Corpo da Requisição (JSON):
+````json
+{
+  "nome": "João",
+  "idade": 30
+}
+````
+Resultado: O middleware express.json() irá processar o corpo da requisição no formato JSON, e o objeto req.body será preenchido com os dados enviados. O servidor irá imprimir os dados recebidos no console e enviará a resposta "Informação recebida com sucesso" de volta ao cliente.
