@@ -449,4 +449,144 @@ app.get('/format', (req, res) => {
 
 app.listen(3000);
 ````
+## 14. Express.js - Objeto de Requisição
+Lembre-se de instalar as dependências necessárias, como o body-parser e o cookie-parser, utilizando o npm ou yarn, antes de executar os exemplos abaixo.
 
+A) req.body: Contém pares chave-valor com os dados submetidos no corpo da requisição.
+Para usar req.body, é necessário configurar um middleware de parsing de corpo, como o body-parser ou o express.json(), no seu aplicativo Express.
+
+Exemplo com body-parser:
+````javascript
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+
+// Middleware para fazer o parsing do corpo da requisição
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.post('/data', (req, res) => {
+  const data = req.body;
+  console.log(data); // Exibe os dados enviados no corpo da requisição
+  res.send('Dados recebidos com sucesso!');
+});
+
+app.listen(3000);
+````
+B) req.cookies: Contém os cookies enviados na requisição.
+Para usar req.cookies, é necessário configurar um middleware cookie-parser no seu aplicativo Express.
+
+Exemplo com cookie-parser:
+
+````javascript
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const app = express();
+
+// Middleware para fazer o parsing dos cookies da requisição
+app.use(cookieParser());
+
+app.get('/get-cookie', (req, res) => {
+  const cookieData = req.cookies;
+  console.log(cookieData); // Exibe os cookies enviados na requisição
+  res.send('Cookies recebidos com sucesso!');
+});
+
+app.listen(3000);
+````
+C) req.host, req.hostname, req.ip, req.protocol: Contém as informações de host, hostname, IP e protocolo associados à requisição.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/info', (req, res) => {
+  console.log(`Host: ${req.host}`);
+  console.log(`Hostname: ${req.hostname}`);
+  console.log(`IP: ${req.ip}`);
+  console.log(`Protocol: ${req.protocol}`);
+
+  res.send('Informações da requisição exibidas no console.');
+});
+
+app.listen(3000);
+````
+D) req.params: Contém os parâmetros de path na URL da requisição.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/produtos/:id', (req, res) => {
+  const productId = req.params.id;
+  console.log(`ID do produto: ${productId}`);
+  res.send(`Produto com ID ${productId} encontrado.`);
+});
+
+app.listen(3000);
+````
+E) req.query: Contém os dados passados pela query string na URL da requisição.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/produtos', (req, res) => {
+  const sortBy = req.query.sort || 'asc';
+  console.log(`Ordenar por: ${sortBy}`);
+  res.send(`Lista de produtos ordenada por: ${sortBy}`);
+});
+
+app.listen(3000);
+````
+F) req.path: Contém a parte do path da URL.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/user/profile', (req, res) => {
+  console.log(`Path da URL: ${req.path}`);
+  res.send('Exemplo de uso do req.path.');
+});
+
+app.listen(3000);
+````
+G) req.url: Contém a URL completa (path + query string).
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/search', (req, res) => {
+  console.log(`URL completa: ${req.url}`);
+  res.send('Exemplo de uso do req.url.');
+});
+
+app.listen(3000);
+````
+H) req.accepts(): Verifica se um determinado tipo de conteúdo é aceito pelo cliente.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/data', (req, res) => {
+  if (req.accepts('json')) {
+    res.json({ message: 'Resposta em JSON aceita.' });
+  } else if (req.accepts('html')) {
+    res.send('<h1>Resposta em HTML aceita.</h1>');
+  } else {
+    res.status(406).send('Not Acceptable');
+  }
+});
+
+app.listen(3000);
+````
+I) req.get(): Obtém um cabeçalho específico da requisição.
+````javascript
+const express = require('express');
+const app = express();
+
+app.get('/referrer', (req, res) => {
+  const referrerHeader = req.get('Referrer');
+  console.log(`Referrer: ${referrerHeader}`);
+  res.send('Exemplo de uso do req.get() para obter o cabeçalho "Referrer".');
+});
+
+app.listen(3000);
+````
